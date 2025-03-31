@@ -4,6 +4,8 @@ import sys
 import pygame
 #导入settings类
 from settings import Settings
+#导入Ship类
+from ship import Ship
 #创建主类
 class AlienInvasion:
     """管理游戏资源和行为的类"""
@@ -22,6 +24,9 @@ class AlienInvasion:
         #设置背景色
         self.bg_color = (230,230,230)
 
+        #导入Ship类
+        self.ship = Ship(self)
+
     def run_game(self):
         """开始游戏的主循环"""
         while True:
@@ -32,7 +37,8 @@ class AlienInvasion:
 
             #每次循环时都重绘屏幕,fill方法是用背景色充满屏幕
             self.screen.fill(self.settings.bg_color)
-
+            self.ship.blitme()
+            
             #让最近绘制的屏幕可见
             pygame.display.flip()
 
