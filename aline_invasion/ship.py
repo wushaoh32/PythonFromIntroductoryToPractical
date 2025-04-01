@@ -8,6 +8,7 @@ class Ship:
         """初始化飞船并设置其初始位置。"""
         #将屏幕赋给Ship的一个属性
         self.screen = ai_game.screen
+        self.settings = ai_game.settings
         #使用get_rect方法访问屏幕的属性rect
         self.screen_rect = ai_game.screen.get_rect()
 
@@ -19,6 +20,23 @@ class Ship:
 
         # 对于每艘新飞船，都将其放在屏幕底部的中央。
         self.rect.midbottom = self.screen_rect.midbottom
+
+        #在飞船的属性x中存储小数值
+        self.x = float(self.rect.x)      
+
+        #移动标识
+        self.moving_right = False
+        self.moving_left = False
+
+    def update(self):
+        "根据移动标志调整飞船的位置"
+        if self.moving_right:
+            self.x += self.settings.ship_speed
+        if self.moving_left:
+            self.x -= self.settings.ship_speed
+        
+        #根据self.x更新rect对象
+        self.rect.x = self.x
 
     def blitme(self):
         """在指定位置绘制飞船。"""

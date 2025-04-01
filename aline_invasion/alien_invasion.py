@@ -30,15 +30,33 @@ class AlienInvasion:
     def run_game(self):
         """开始游戏的主循环"""
         while True:
-            # 监视键盘和鼠标事件
-            for event in pygame.event.get():#检测事件访问
-                if event.type == pygame.QUIT:#检测到这个事件，调用sys退出游戏
-                    sys.exit()
-
-            #每次循环时都重绘屏幕,fill方法是用背景色充满屏幕
-            self.screen.fill(self.settings.bg_color)
-            self.ship.blitme()
+            self._check_events()
+            self.ship.update()
+            self._update_screen()
             
+    def _check_events(self):
+        """辅助方法的名称以单个下划线打头：其作用是为了隔离事件循环"""
+        # 监视键盘和鼠标事件
+        for event in pygame.event.get():#检测事件访问
+            if event.type == pygame.QUIT:#检测到这个事件，调用sys退出游戏
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT:
+                    self.ship.moving_right = True
+                elif event.key == pygame.K_LEFT:
+                    self.ship.moving_left =True
+                    #向右移动飞船
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_RIGHT:
+                    self.ship.moving_right = False
+                elif event.key == pygame.K_LEFT:
+                    self.ship.moving_left = False
+    
+    
+    def _update_screen(self):
+        #每次循环时都重绘屏幕,fill方法是用背景色充满屏幕
+            self.screen.fill(self.settings.bg_color)
+            self.ship.blitme() 
             #让最近绘制的屏幕可见
             pygame.display.flip()
 
