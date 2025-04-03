@@ -38,6 +38,8 @@ class AlienInvasion:
 
         self._create_fleet()
 
+        
+
 
     def run_game(self):
         """开始游戏的主循环"""
@@ -45,6 +47,7 @@ class AlienInvasion:
             self._check_events()
             self.ship.update()
             self._update_bullets()
+            self._update_aliens()
             self._update_screen()
             self.bullets.update()
             
@@ -89,6 +92,10 @@ class AlienInvasion:
         for bullet in self.bullets.copy():
             if bullet.rect.bottom < 0:
                 self.bullets.remove(bullet)
+
+    def _update_aliens(self):
+        """更新外星人群中所有外星人的位置"""
+        self.alien.update()
 
     def _create_fleet(self):
         """创建一个外星人群"""
