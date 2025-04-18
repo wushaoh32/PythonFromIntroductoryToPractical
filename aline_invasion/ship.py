@@ -14,7 +14,7 @@ class Ship:
 
         #加载飞船图像并获取其外接矩形,把飞船和屏幕按照矩形进行处理
         #Yes,Yes成功了，这tm的居然必须用绝对路径，而且这jj的Python只能用斜杠(/),不能反斜杠
-        self.image = pygame.image.load('C:/Users/admin/Desktop/PythonFromIntroductoryToPractical/aline_invasion/images/ship.bmp')
+        self.image = pygame.image.load('images/ship.bmp')
         #在Pygame中(0,0)位于屏幕左上角
         self.rect = self.image.get_rect()
 

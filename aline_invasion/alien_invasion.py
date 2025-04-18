@@ -10,9 +10,8 @@ from ship import Ship
 from bullet import Bullet
 
 from alien import Alien
-#创建主类
+#创建主类：管理游戏资源和行为的类
 class AlienInvasion:
-    """管理游戏资源和行为的类"""
     #定义方法init
     def __init__(self):
         """初始化游戏并创建游戏资源"""
@@ -37,9 +36,6 @@ class AlienInvasion:
         self.alien = pygame.sprite.Group()
 
         self._create_fleet()
-
-        
-
 
     def run_game(self):
         """开始游戏的主循环"""
@@ -93,9 +89,10 @@ class AlienInvasion:
             if bullet.rect.bottom < 0:
                 self.bullets.remove(bullet)
 
+    #检查是否有外星人位于屏幕边缘，并更新整群外星人的位置
     def _update_aliens(self):
-        """更新外星人群中所有外星人的位置"""
-        self.alien.update()
+        self._check_fleet_edges()
+        self.alien.update()#更新位置
 
     def _create_fleet(self):
         """创建一个外星人群"""
@@ -124,7 +121,18 @@ class AlienInvasion:
         alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
         self.alien.add(alien)
 
+    #外星人到达边缘时采取相应措施
+    def _check_fleet_edges(self):
+        for aline in self.alien.sprites():
+            if aline.check_edges():
+                self._change_fleet_direction()
+                break
 
+    #将整群外星人下移并改变他们的方向
+    def _change_fleet_direction(self):
+        for aline in self.alien.sprites():
+            aline.rect.y += self.settings.fleet_drop_speed
+        self.settings.fleet_direction *= -1
 
     def _update_screen(self):
         #每次循环时都重绘屏幕,fill方法是用背景色充满屏幕
