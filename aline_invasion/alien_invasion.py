@@ -2,6 +2,7 @@
 import sys
 #导入模块pygame：功能
 import pygame
+
 #导入settings类
 from settings import Settings
 #导入Ship类
@@ -80,14 +81,25 @@ class AlienInvasion:
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = False  
 
+    #更新子弹的位置并消除子弹
     def _update_bullets(self):
-        """更新子弹的位置并消除子弹"""
         #更新子弹的位置
         self.bullets.update()
         #消除消失的子弹
         for bullet in self.bullets.copy():
             if bullet.rect.bottom < 0:
                 self.bullets.remove(bullet)
+        self._check_bullet_alien_collisions()
+
+    # 检查是否有子弹击中了外星人。如果是：就删除相应的子弹和外星人
+    def _check_bullet_alien_collisions(self):
+        collisions = pygame.sprite.groupcollide(
+            self.bullets,self.alien,True,True)
+
+        if not self.alien:
+            #删除现有的子弹,并创建一群外星人
+            self.bullets.empty()
+            self._create_fleet()
 
     #检查是否有外星人位于屏幕边缘，并更新整群外星人的位置
     def _update_aliens(self):
@@ -113,7 +125,7 @@ class AlienInvasion:
             for alien_number in range(number_aliens_x):
                 self._create_alien(alien_number,row_number)
 
-    def  _create_alien(self,alien_number,row_number):
+    def _create_alien(self,alien_number,row_number):
         alien = Alien(self)
         alien_width,alien_height = alien.rect.size
         alien.x = alien_width + 2*alien_width * alien_number
