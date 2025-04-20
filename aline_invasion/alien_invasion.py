@@ -74,6 +74,8 @@ class AlienInvasion:
     def _check_play_button(self, mouse_pos):
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.stats.game_active:
+            #重置游戏设置
+            self.settings.initialize_dynamic_settings()
             #重置游戏统计信息
             self.stats.game_active = True
             #清空余下的外星人和子弹
@@ -123,6 +125,7 @@ class AlienInvasion:
             #删除现有的子弹,并创建一群外星人
             self.bullets.empty()
             self._create_fleet()
+            self.settings.increase_speed()
 
     #检查是否有外星人位于屏幕边缘，并更新整群外星人的位置
     def _update_aliens(self):
