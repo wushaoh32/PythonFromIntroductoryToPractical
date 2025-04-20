@@ -1,10 +1,13 @@
 #导入模块sys:退出游戏
 import sys
+#飞船被撞后，游戏暂停片刻
+from time import sleep
 #导入模块pygame：功能
 import pygame
-
 #导入settings类
 from settings import Settings
+#以创建一个GameStats实例
+from game_stats import GameStats
 #导入Ship类
 from ship import Ship
 
@@ -31,7 +34,10 @@ class AlienInvasion:
         #设置背景色
         self.bg_color = (230,230,230)
 
-        #导入Ship类、、
+        #创建一个用于存储游戏统计信息的实例
+        self.stats = GameStats(self)
+
+        #导入Ship类
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.alien = pygame.sprite.Group()
@@ -82,6 +88,7 @@ class AlienInvasion:
             self.ship.moving_left = False  
 
     #更新子弹的位置并消除子弹
+
     def _update_bullets(self):
         #更新子弹的位置
         self.bullets.update()
@@ -105,6 +112,9 @@ class AlienInvasion:
     def _update_aliens(self):
         self._check_fleet_edges()
         self.alien.update()#更新位置
+        #监测外星人和飞船之间的碰撞
+        if pygame.sprite.spritecollideany(self.ship,self.alien):
+            self._ship_hit()
 
     def _create_fleet(self):
         """创建一个外星人群"""
@@ -162,6 +172,21 @@ class AlienInvasion:
             new_bullets  = Bullet(self)
             self.bullets.add(new_bullets)
 
+    def _ship_hit(self):
+        """相应飞船被外星人撞到"""
+        #将ship_left减1
+        self.stats.ships_left -= 1
+
+        #清空余下的外星人和子弹
+        self.alien.empty()
+        self.bullets.empty()
+
+        #创建一群新的外星人，并将飞船放到屏幕底端的中央
+        self._create_fleet()
+        self.ship.center_ship()
+
+        #暂停
+        sleep(0.5)
 if __name__ == '__main__':
     #创建游戏实例并运行游戏。
     ai = AlienInvasion()

@@ -10,6 +10,7 @@ class Settings:
 
         #飞船设置——每次移动1.5像素
         self.ship_speed = 1.5
+        self.ship_limit = 3
 
         #子弹设置
         self.bullet_speed = 5
