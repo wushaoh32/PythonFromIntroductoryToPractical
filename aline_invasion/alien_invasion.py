@@ -14,6 +14,7 @@ from ship import Ship
 from bullet import Bullet
 
 from alien import Alien
+
 #创建主类：管理游戏资源和行为的类
 class AlienInvasion:
     #定义方法init
@@ -30,30 +31,28 @@ class AlienInvasion:
         # self.settings.screen_width = self.screen.get_rect().width
         # self.settings.screen_height = self.screen.get_rect().height
         pygame.display.set_caption("Alien Invasion")
-
         #设置背景色
         self.bg_color = (230,230,230)
-
         #创建一个用于存储游戏统计信息的实例
         self.stats = GameStats(self)
-
         #导入Ship类
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.alien = pygame.sprite.Group()
-
         self._create_fleet()
+
 
     def run_game(self):
         """开始游戏的主循环"""
         while True:
             self._check_events()
-            self.ship.update()
-            self._update_bullets()
-            self._update_aliens()
+
+            if self.stats.game_active:
+                self.ship.update()
+                self._update_bullets()
+                self._update_aliens()
+                self.bullets.update()
             self._update_screen()
-            self.bullets.update()
-            
 
             print(len(self.bullets))
             
@@ -115,6 +114,8 @@ class AlienInvasion:
         #监测外星人和飞船之间的碰撞
         if pygame.sprite.spritecollideany(self.ship,self.alien):
             self._ship_hit()
+        #检查是否有外星人到达了屏幕底端
+        self._check_aliens_bottom()
 
     def _create_fleet(self):
         """创建一个外星人群"""
@@ -174,19 +175,29 @@ class AlienInvasion:
 
     def _ship_hit(self):
         """相应飞船被外星人撞到"""
-        #将ship_left减1
-        self.stats.ships_left -= 1
+        if self.stats.ships_left > 0:
+            #将ship_left减1
+            self.stats.ships_left -= 1
+            #清空余下的外星人和子弹
+            self.alien.empty()
+            self.bullets.empty()
+            #创建一群新的外星人，并将飞船放到屏幕底端的中央
+            self._create_fleet()
+            self.ship.center_ship()
+            #暂停
+            sleep(0.5)
+        else:
+            self.stats.game_active = False
 
-        #清空余下的外星人和子弹
-        self.alien.empty()
-        self.bullets.empty()
+    def _check_aliens_bottom(self):
+        """检查是否有外星人到达了屏幕底端"""
+        screen_rect = self.screen.get_rect()
+        for alien in self.alien.sprites():
+            if alien.rect.bottom >= screen_rect.bottom:
+                #向飞船被撞到一样处理
+                self._ship_hit()
+                break
 
-        #创建一群新的外星人，并将飞船放到屏幕底端的中央
-        self._create_fleet()
-        self.ship.center_ship()
-
-        #暂停
-        sleep(0.5)
 if __name__ == '__main__':
     #创建游戏实例并运行游戏。
     ai = AlienInvasion()
