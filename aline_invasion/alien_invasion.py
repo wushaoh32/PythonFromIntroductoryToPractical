@@ -13,6 +13,7 @@ from ship import Ship
 from bullet import Bullet
 from alien import Alien
 from button import Button
+from scoreboard import Scoreboard
 
 #创建主类：管理游戏资源和行为的类
 class AlienInvasion:
@@ -34,6 +35,8 @@ class AlienInvasion:
         self.bg_color = (230,230,230)
         #创建一个用于存储游戏统计信息的实例
         self.stats = GameStats(self)
+        #创建记分牌
+        self.sb = Scoreboard(self)
         #导入Ship类
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
@@ -86,6 +89,7 @@ class AlienInvasion:
             self.ship.center_ship()
             #隐藏鼠标光标
             pygame.mouse.set_visible(False)
+
 
     def _check_keydown_events(self,event):
         if event.key == pygame.K_RIGHT:
@@ -184,6 +188,8 @@ class AlienInvasion:
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.alien.draw(self.screen)
+        #显示得分
+        self.sb.show_score()
         #如果游戏处于非活动状态，就会只Play按钮
         if not self.stats.game_active:
             self.play_button.draw_button()
