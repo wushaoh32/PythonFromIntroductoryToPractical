@@ -3,7 +3,7 @@ from random_walk import RandomWalk
 
 while True:
     #创建一个Random实例
-    rw = RandomWalk()
+    rw = RandomWalk(50_000)
     rw.fill_walk()
 
     #将所有的点绘制出来
@@ -12,6 +12,10 @@ while True:
     fig,ax = plt.subplots()
     #列表长度
     point_numbers = range(rw.num_points)
+    #把每个点的大小都设置为1
+    ax.scatter(rw.x_values, rw.y_values, c=point_numbers,
+               cmap=plt.cm.Blues,
+               edgecolor='none',s=1)
     #浅蓝到深蓝的颜色映射,edgecolors='none'是删除点的轮廓
     ax.scatter(rw.x_values,rw.y_values,c = point_numbers
                ,cmap= plt.cm.Blues,
@@ -24,6 +28,10 @@ while True:
     #突出起点和终点
     ax.scatter(0,0,c='green',edgecolors='none',s=100)
     ax.scatter(rw.x_values[-1],rw.y_values[-1],c='red',edgecolors='none',s=100)
+
+    #隐藏坐标轴
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
 
     #绘制柱形条
     #plt.colorbar()
